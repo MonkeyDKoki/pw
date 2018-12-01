@@ -31,6 +31,7 @@ var mostrarDetalles = function(){
 
 var btnDetalles = document.getElementsByClassName('btnDetalles');
 var btnGrupos = document.getElementsByClassName('btnGrupos');
+var btnFavoritos = document.getElementsByClassName('btnFavoritos');
 var obtenerGrupos= function(){
 	var url='http://museobillete.azurewebsites.net/api/Expo/';
 	fetch(url+localStorage.getItem("mostrador"))
@@ -39,6 +40,7 @@ var obtenerGrupos= function(){
 		var foto='';
         var titulo='';
         var id='';
+        var esFavorito=0;
 		document.getElementById('grupo').innerHTML='';
 		for(let i=0;i<datos.mostradores[0].grupos.length;i++)
 		{
@@ -46,8 +48,10 @@ var obtenerGrupos= function(){
             id=datos.mostradores[0].grupos[i].id;
             descripcion=datos.mostradores[0].grupos[i].descripcion;
             foto=datos.mostradores[0].grupos[i].imagenFondoUrl;
+            esFavorito=0;
             if(datos.mostradores[0].grupos[i].unico===true)
             {
+                esFavorito=consultarId(id);
                 document.getElementById('grupo').innerHTML += `
                 <article>
                     <span>${titulo}</span>
@@ -55,6 +59,7 @@ var obtenerGrupos= function(){
                     <span>${descripcion}</span>
                     <img src="${foto}">                            
                     <button class="btnDetalles" value="${i}">Ver Detalle</button>
+                    <button class="btnFavoritos" id="${id}" value="${esFavorito}">Favorito</button>
                 </article>
                 <hr>
                 <br>
@@ -78,10 +83,25 @@ var obtenerGrupos= function(){
         {
             btnGrupos[i].addEventListener('click',mostrarPiezas);
         }
-		for(let i=0;i<btnDetalles.length;i++)
-		{
-			btnDetalles[i].addEventListener('click',mostrarDetalles);
-		}
+        for(let i=0;i<btnDetalles.length;i++)
+        {
+            btnDetalles[i].addEventListener('click',mostrarDetalles);
+            btnFavoritos[i].addEventListener('click',asignarFavorito);
+        }
+        /*for(let i=0;i<datos.mostradores[0].grupos.length;i++)
+        {
+            if(datos.mostradores[0].grupos[i].unico===true)
+            {
+                j++;
+                titulo=datos.mostradores[0].grupos[i].titulo;
+                id=datos.mostradores[0].grupos[i].id;
+                descripcion=datos.mostradores[0].grupos[i].descripcion;
+                foto=datos.mostradores[0].grupos[i].imagenFondoUrl;
+                console.log(foto);
+                btnDetalles[j].addEventListener('click',mostrarDetalles);
+                btnFavoritos[j].addEventListener('click',function(){asignarFavorito(foto)},false);
+            }
+        }*/
 	})
 }
 obtenerGrupos();
